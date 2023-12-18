@@ -68,8 +68,12 @@ export type UserProps = {
 - Devolver o valor consumido em um saldo se o pagamento a ele vinculado for excluído.
 
 ## Como rodar o projeto
-Vá até a pasta `front` e rode os comandos: `npm install && npm run build && npm run preview`
+Vá até a pasta `front` e rode os comandos: `npm install && npm run build && npm run preview`<br>
 Caso queira rodar em modo de desenvolvimento: `npm install && npm run dev`
+Abra em: http://localhost:5173
+
+Após isso, vá até a pasta `api` e rode: `npm install && npx prisma migrate dev && npm run dev`<br>
+Abra em: http://localhost:3333
 
 ## Tecnologias usadas
 Ambos projetos feitos com Typescript.
@@ -92,8 +96,3 @@ Ambos projetos feitos com Typescript.
   - Zod
   - Jwt
   - Bcrypt
-
-Abra em: http://localhost:5173
-
-Após isso, vá até a pasta `api` e rode: `npm install && npx prisma migrate dev && npm run dev`
-Abra em: http://localhost:3333
