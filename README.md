@@ -73,5 +73,5 @@ Caso queira rodar em modo de desenvolvimento: npm install && npm run dev
 
 Abra em: http://localhost:5173
 
-Após isso, vá até a pasta `api` e rode: npm install && npm run dev
+Após isso, vá até a pasta `api` e rode: npm install && npx prisma migrate dev && npm run dev
 Abra em: http://localhost:3333
