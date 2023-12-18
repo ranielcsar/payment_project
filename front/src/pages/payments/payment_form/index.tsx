@@ -12,7 +12,6 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { ZodType } from 'zod'
 
 import { useBalances } from '@/pages/balances/hooks/useBalances'
-import { BalanceProps } from '@/types/balance'
 import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
 
 type PaymentFormProps<T> = {
@@ -128,15 +127,4 @@ export function PaymentForm<T>({
       )}
     </form>
   )
-}
-
-function handleBalanceLabel({
-  name,
-  initial_value,
-  used_value,
-  remaining_value,
-}: BalanceProps) {
-  const value = used_value === 0 ? initial_value : remaining_value
-
-  return `${name} - ${convertToMonetaryValue(value)}`
 }
