@@ -71,6 +71,28 @@ export type UserProps = {
 Vá até a pasta `front` e rode os comandos: `npm install && npm run build && npm run preview`
 Caso queira rodar em modo de desenvolvimento: `npm install && npm run dev`
 
+## Tecnologias usadas
+Ambos projetos feitos com Typescript.
+
+- Front
+  - TailwindCSS
+  - MaterialUI
+  - Zod
+  - React Hook Form
+  - React query
+  - JWT Decode
+  - ViteJS
+  - Axios
+  - React router
+  - React toastify
+  
+- Api
+  - PrismaJS
+  - Fastify
+  - Zod
+  - Jwt
+  - Bcrypt
+
 Abra em: http://localhost:5173
 
 Após isso, vá até a pasta `api` e rode: `npm install && npx prisma migrate dev && npm run dev`
