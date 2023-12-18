@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query'
 
 import { api } from '@/services/api'
 import { PaymentProps } from '@/types/payment'
@@ -15,7 +15,12 @@ async function editPayment(payment: Partial<PaymentProps>) {
   }
 }
 
-export function useEditPayment() {
+type Return = {
+  editPayment: UseMutateAsyncFunction<any, Error, Partial<PaymentProps>, unknown>
+  isSuccess: boolean
+}
+
+export function useEditPayment(): Return {
   const { mutateAsync, isSuccess } = useMutation({
     mutationFn: (payment: Partial<PaymentProps>) => editPayment(payment),
   })

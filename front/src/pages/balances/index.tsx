@@ -1,19 +1,22 @@
-import { Button, Skeleton, TableCell, TableRow } from '@mui/material'
+import { useState } from 'react'
 
+import { Button, Skeleton, TableCell, TableRow } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
+import { DataTable, DataTableActions, DeleteDialog } from '@/components'
 import {
   Content,
-  ContentHeader,
   ContentButton,
+  ContentHeader,
   ContentHeaderTitle,
   ContentMain,
 } from '@/layout'
-import { DataTable, DataTableActions, DeleteDialog } from '@/components'
+import { api } from '@/services/api'
 import { BalanceProps } from '@/types/balance'
 import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
 import { useBalances } from './hooks/useBalances'
-import { api } from '@/services/api'
+import { useNotification } from '@/utils/useNotification'
 
 const table_headings = [
   'Nome',
@@ -27,6 +30,7 @@ export function BalancesPage() {
   const navigate = useNavigate()
   const [balanceToDelete, setBalanceToDelete] = useState<BalanceProps | null>(null)
   const { data, loading: loading_balances, refetch } = useBalances()
+  const { notification } = useNotification()
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const handleOpenDeleteDialog = (balance: BalanceProps) => {
@@ -39,11 +43,15 @@ export function BalancesPage() {
   }
   const handleDeleteBalance = async () => {
     try {
-      await api.delete(`/balances/${balanceToDelete?.id}`)
+      const result: any = await api.delete(`/balances/${balanceToDelete?.id}`)
       handleCloseDeleteDialog()
       refetch()
-    } catch (err) {
-      console.error(err)
+
+      notification(result.data.message, { type: 'success' })
+    } catch (err: any) {
+      return notification(err.response.data.error, {
+        type: 'error',
+      })
     }
   }
 

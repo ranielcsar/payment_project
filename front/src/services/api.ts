@@ -1,3 +1,4 @@
+import { getTokenFromLocalStorage } from '@/utils/localStorage'
 import axios from 'axios'
 
 // import { getTokenFromLocalStorage } from '@/utils/localStorage'
@@ -7,8 +8,7 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  const token = // getTokenFromLocalStorage()
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmFuaWVsIiwic3ViIjoiOTAwZWM2ODItMTY2NS00ZDZiLWIwN2QtMzVlMTE5YTcxMTM3IiwiaWF0IjoxNzAyNjU4MDE0LCJleHAiOjE3MDUyNTAwMTR9.AWAM8SKUbdmpVBTxXdooNWeLvYRZQOiEFoMdORL8LVE'
+  const token = getTokenFromLocalStorage()
 
   if (token) config.headers.Authorization = `Bearer ${token}`
 

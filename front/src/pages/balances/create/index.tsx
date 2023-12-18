@@ -1,17 +1,20 @@
+import { SubmitHandler } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+
 import {
   Content,
+  ContentButton,
+  ContentCancelButton,
+  ContentFooter,
   ContentHeader,
   ContentHeaderTitle,
   ContentMain,
-  ContentFooter,
-  ContentButton,
-  ContentCancelButton,
 } from '@/layout'
-import { SubmitHandler } from 'react-hook-form'
-import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
+
 import { BalanceForm } from '../balance_form'
 import { useCreateBalance } from '../hooks/useCreateBalance'
+import { useNotification } from '@/utils/useNotification'
 
 const createBalanceSchema = z.object({
   name: z.string({ required_error: 'Nome é obrigatório' }),
@@ -28,16 +31,25 @@ type BalanceFormInputs = {
 export function CreateBalance() {
   const navigate = useNavigate()
   const { createBalance } = useCreateBalance()
+  const { notification } = useNotification()
 
-  const goBack = () => navigate('/balances')
+  const navigateBack = () => navigate('/balances')
 
-  const onSubmit: SubmitHandler<BalanceFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<BalanceFormInputs> = async (data) => {
     const initial_value = data.initial_value.replace(',', '.')
 
-    createBalance({
+    const result = await createBalance({
       ...data,
       initial_value: parseFloat(initial_value),
-    }).then(goBack)
+    })
+
+    if (!result.message) {
+      return notification(result?.error, { type: 'error' })
+    }
+
+    notification(result?.message, { type: 'success' })
+
+    navigateBack()
   }
 
   return (
@@ -51,7 +63,7 @@ export function CreateBalance() {
       </ContentMain>
 
       <ContentFooter>
-        <ContentCancelButton onClick={goBack}>Cancelar</ContentCancelButton>
+        <ContentCancelButton onClick={navigateBack}>Cancelar</ContentCancelButton>
         <ContentButton form="balance_form" type="submit">
           Criar
         </ContentButton>

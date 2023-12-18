@@ -1,36 +1,23 @@
-import * as React from 'react'
-import AdbIcon from '@mui/icons-material/Adb'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
+import { getUser } from '@/utils/getUser'
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Container,
   Menu,
-  MenuItem,
   Toolbar,
   Tooltip,
   Typography,
 } from '@mui/material'
-
-const pages = ['Products', 'Pricing', 'Blog']
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+import IconButton from '@mui/material/IconButton'
+import { useState } from 'react'
 
 export function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+  const { user } = getUser()
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget)
-  }
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
-  }
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null)
   }
 
   const handleCloseUserMenu = () => {
@@ -62,7 +49,7 @@ export function Header() {
                 onClick={handleOpenUserMenu}
                 sx={{ p: 0 }}
               >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar {...stringAvatar(user?.name)} />
               </IconButton>
             </Tooltip>
 
@@ -82,15 +69,22 @@ export function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <hgroup className="flex flex-col gap-2 px-2 py-4">
+                <h2 className="text-xl">{user?.name}</h2>
+                <h4 className="text-slate-500">{user?.username}</h4>
+              </hgroup>
             </Menu>
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   )
+}
+
+function stringAvatar(name?: string) {
+  if (!name) return
+
+  return {
+    children: `${name.split(' ')[0][0]}`,
+  }
 }

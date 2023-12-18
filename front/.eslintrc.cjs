@@ -17,26 +17,44 @@ module.exports = {
     },
   },
   rules: {
+    camelcase: 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-unused-vars': 'warn',
+    semi: ['error', 'never'],
+    quotes: ['error', 'single'],
     'sort-imports': [
       'error',
       {
-        ignoreCase: false,
-        ignoreDeclarationSort: false,
+        ignoreCase: true,
+        ignoreDeclarationSort: true,
         ignoreMemberSort: false,
-        allowSeparatedGroups: true,
+        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
       },
     ],
-
     'import/order': [
       'error',
       {
-        groups: [
-          ['builtin', 'external'],
-          ['internal', 'parent', 'sibling', 'index'],
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        pathGroups: [
+          {
+            pattern: 'react',
+            group: 'builtin',
+            position: 'before',
+          },
+          {
+            pattern: '@/**',
+            group: 'internal',
+            position: 'before',
+          },
         ],
+        pathGroupsExcludedImportTypes: ['builtin'],
         'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: false,
+        },
       },
     ],
-    'no-unused-vars': ['warn'],
   },
 }

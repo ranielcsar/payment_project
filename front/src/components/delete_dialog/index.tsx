@@ -1,16 +1,17 @@
 import { forwardRef, PropsWithChildren, ReactElement, Ref, useState } from 'react'
-import { TransitionProps } from '@mui/material/transitions'
 
+import { Delete } from '@mui/icons-material'
 import {
   Button,
-  Dialog as MaterialDialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Dialog as MaterialDialog,
   Slide,
 } from '@mui/material'
-import { Delete } from '@mui/icons-material'
+import { TransitionProps } from '@mui/material/transitions'
+
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {

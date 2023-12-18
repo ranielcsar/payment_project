@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query'
 
 import { api } from '@/services/api'
 import { PaymentProps } from '@/types/payment'
@@ -15,7 +15,11 @@ async function createPayment(payment: Partial<PaymentProps>) {
   }
 }
 
-export function useCreatePayment() {
+type Return = {
+  createPayment: UseMutateAsyncFunction<any, Error, Partial<PaymentProps>, unknown>
+}
+
+export function useCreatePayment(): Return {
   const { mutateAsync } = useMutation({
     mutationFn: (payment: Partial<PaymentProps>) => createPayment(payment),
   })

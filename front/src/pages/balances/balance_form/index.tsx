@@ -1,7 +1,8 @@
-import { TextField } from '@mui/material'
-import { useForm, Controller, FieldValues } from 'react-hook-form'
-import { ZodType } from 'zod'
+import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { TextField } from '@mui/material'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { ZodType } from 'zod'
 
 type BalanceFormProps<T> = {
   zodSchema: ZodType<T, any, any>
@@ -53,6 +54,7 @@ export function BalanceForm<T>({
             onChange={onChange}
             value={value}
             error={!!error}
+            disabled={isEditing}
           />
         )}
       />
@@ -67,7 +69,7 @@ export function BalanceForm<T>({
             variant="outlined"
             helperText={error ? error.message : null}
             onChange={onChange}
-            value={value}
+            value={isEditing ? convertToMonetaryValue(value) : value}
             error={!!error}
             disabled={isEditing}
           />

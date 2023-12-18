@@ -1,8 +1,8 @@
-import { PaymentProps } from '@/types/payment'
 
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/services/api'
+import { PaymentProps } from '@/types/payment'
 
 async function getPayments() {
   try {

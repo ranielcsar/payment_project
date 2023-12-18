@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   FormControl,
   FormHelperText,
@@ -7,12 +8,12 @@ import {
   Skeleton,
   TextField,
 } from '@mui/material'
-import { useForm, Controller, FieldValues } from 'react-hook-form'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { ZodType } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+
 import { useBalances } from '@/pages/balances/hooks/useBalances'
-import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
 import { BalanceProps } from '@/types/balance'
+import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
 
 type PaymentFormProps<T> = {
   zodSchema: ZodType<T, any, any>
@@ -80,7 +81,7 @@ export function PaymentForm<T>({
             variant="outlined"
             helperText={error ? error.message : null}
             onChange={onChange}
-            value={value}
+            value={isEditing ? convertToMonetaryValue(value) : value}
             error={!!error}
             disabled={isEditing}
           />

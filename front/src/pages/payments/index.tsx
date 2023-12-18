@@ -1,20 +1,22 @@
+import { useState } from 'react'
+
 import { Button, Skeleton, TableCell, TableRow } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
+import { DataTable, DataTableActions, DeleteDialog } from '@/components'
 import {
   Content,
-  ContentHeader,
   ContentButton,
+  ContentHeader,
   ContentHeaderTitle,
   ContentMain,
 } from '@/layout'
-
-import { DataTable, DataTableActions, DeleteDialog } from '@/components'
+import { api } from '@/services/api'
 import { PaymentProps } from '@/types/payment'
 import { convertToMonetaryValue } from '@/utils/convertToMonetaryValue'
-import { useState } from 'react'
+
 import { usePayments } from './hooks/usePayments'
-import { api } from '@/services/api'
+import { useNotification } from '@/utils/useNotification'
 
 const table_headings = ['Nome', 'Descrição', 'Valor']
 
@@ -22,6 +24,7 @@ export function PaymentsPage() {
   const navigate = useNavigate()
   const [paymentToDelete, setPaymentToDelete] = useState<PaymentProps | null>(null)
   const { data, loading: loading_payments, refetch } = usePayments()
+  const { notification } = useNotification()
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const handleOpenDeleteDialog = (payment: PaymentProps) => {
@@ -34,9 +37,15 @@ export function PaymentsPage() {
   }
   const handleDeletePayment = async () => {
     try {
-      await api.delete(`/payments/${paymentToDelete?.id}`)
+      const result: any = await api.delete(`/payments/${paymentToDelete?.id}`)
       handleCloseDeleteDialog()
       refetch()
+
+      if (!result.data.message) {
+        return notification(result?.data.error, { type: 'error' })
+      }
+
+      notification(result.data.message, { type: 'success' })
     } catch (err) {
       console.error(err)
     }

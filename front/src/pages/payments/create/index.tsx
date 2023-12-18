@@ -1,17 +1,20 @@
+import { SubmitHandler } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+
 import {
   Content,
+  ContentButton,
+  ContentCancelButton,
+  ContentFooter,
   ContentHeader,
   ContentHeaderTitle,
   ContentMain,
-  ContentFooter,
-  ContentButton,
-  ContentCancelButton,
 } from '@/layout'
-import { PaymentForm } from '../payment_form'
-import { SubmitHandler } from 'react-hook-form'
-import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
+
 import { useCreatePayment } from '../hooks/useCreatePayment'
+import { PaymentForm } from '../payment_form'
+import { useNotification } from '@/utils/useNotification'
 
 const createPaymentSchema = z.object({
   name: z.string({ required_error: 'Nome é obrigatório' }),
@@ -31,17 +34,26 @@ export function CreatePayment() {
   const navigate = useNavigate()
 
   const { createPayment } = useCreatePayment()
+  const { notification } = useNotification()
 
   const navigateBack = () => navigate('/')
 
-  const onSubmit: SubmitHandler<PaymentFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<PaymentFormInputs> = async (data) => {
     const value = data.value.replace(',', '.')
 
-    createPayment({
+    const result = await createPayment({
       ...data,
       value: parseFloat(value),
       balance_to_use: data.balance,
-    }).then(navigateBack)
+    })
+
+    if (!result.message) {
+      return notification(result?.error, { type: 'error' })
+    }
+
+    notification(result?.message, { type: 'success' })
+
+    navigateBack()
   }
 
   return (

@@ -1,8 +1,8 @@
-import { BalanceProps } from '@/types/balance'
 
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/services/api'
+import { BalanceProps } from '@/types/balance'
 
 async function getBalances() {
   try {
