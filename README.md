@@ -66,3 +66,12 @@ export type UserProps = {
 - Impedir que um saldo seja excluído caso um pagamento esteja vinculado a ele.
 - Consumir o valor restante de um saldo quando o mesmo for usado em um pagamento.
 - Devolver o valor consumido em um saldo se o pagamento a ele vinculado for excluído.
+
+## Como rodar o projeto
+Vá até a pasta `front` e rode os comandos: npm install && npm run build && npm run preview
+Caso queira rodar em modo de desenvolvimento: npm install && npm run dev
+
+Abra em: http://localhost:5173
+
+Após isso, vá até a pasta `api` e rode: npm install && npm run dev
+Abra em: http://localhost:3333
