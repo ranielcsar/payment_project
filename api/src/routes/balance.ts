@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 
 import { prisma } from '@/lib/prisma'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 function getBalances(app: FastifyInstance) {
   app.get('/balances', async (request, reply) => {
@@ -14,7 +15,7 @@ function getBalances(app: FastifyInstance) {
 
       return reply.status(200).send({ balances })
     } catch (err) {
-      return reply.status(404).send({ error: 'Erro interno do servidor!', err })
+      return reply.status(500).send({ error: 'Erro interno do servidor!', err })
     }
   })
 }
@@ -33,9 +34,7 @@ function getBalance(app: FastifyInstance) {
         },
       })
 
-      return {
-        balance,
-      }
+      return reply.status(200).send({ balance })
     } catch (err) {
       return reply.status(500).send({ error: 'Erro no servidor', err })
     }
@@ -61,9 +60,9 @@ function createBalance(app: FastifyInstance) {
         },
       })
 
-      return reply.status(200).send({ message: 'Saldo criado com sucesso.' })
+      return reply.status(200).send({ message: 'Saldo criado com sucesso' })
     } catch (err) {
-      return reply.status(500).send({ error: 'Erro ao criar novo saldo.', err })
+      return reply.status(500).send({ error: 'Erro ao criar novo saldo', err })
     }
   })
 }
@@ -92,7 +91,7 @@ function updateBalance(app: FastifyInstance) {
         },
       })
 
-      return reply.status(200).send({ message: 'Saldo atualizado com sucesso.', balance })
+      return reply.status(200).send({ message: 'Saldo atualizado com sucesso', balance })
     } catch (err) {
       return reply.status(500).send({ error: 'Erro no servidor', err })
     }
@@ -113,9 +112,14 @@ function deleteBalance(app: FastifyInstance) {
         },
       })
 
-      return reply.status(200).send({ message: 'Saldo deletado com sucesso.', balance })
-    } catch (err) {
-      return reply.status(500).send({ error: 'Erro no servidor', err })
+      return reply.status(200).send({ message: 'Saldo deletado com sucesso', balance })
+    } catch (err: any) {
+      const error =
+        err?.meta.field_name === 'foreign key'
+          ? 'Não é possível deletar um saldo com pagamento vinculado'
+          : 'Erro no servidor'
+
+      return reply.status(500).send({ error, err })
     }
   })
 }

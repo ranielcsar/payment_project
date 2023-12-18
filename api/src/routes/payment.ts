@@ -15,7 +15,7 @@ function getPayments(app: FastifyInstance) {
 
       return reply.status(200).send({ payments })
     } catch (err) {
-      return reply.status(404).send({ error: 'Erro interno do servidor!', err })
+      return reply.status(500).send({ error: 'Erro interno do servidor!', err })
     }
   })
 }
@@ -65,7 +65,13 @@ function createPayment(app: FastifyInstance) {
         return reply.status(404).send({ error: 'Saldo não encontrado' })
       }
 
-      const payment = await prisma.payment.create({
+      if (balance.remaining_value && balance.remaining_value < value) {
+        return reply
+          .status(409)
+          .send({ error: 'O valor do pagamento é maior que o saldo disponível' })
+      }
+
+      await prisma.payment.create({
         data: {
           name,
           description,
@@ -87,7 +93,7 @@ function createPayment(app: FastifyInstance) {
         },
       })
 
-      return { payment }
+      return reply.status(200).send({ message: 'Pagamento criado com sucesso' })
     } catch (err) {
       return reply.status(500).send({ error: 'Erro no servidor', err })
     }
@@ -107,7 +113,7 @@ function updatePayment(app: FastifyInstance) {
       })
       const { name } = bodySchema.parse(request.body)
 
-      const payment = await prisma.payment.update({
+      await prisma.payment.update({
         data: {
           name,
         },
@@ -116,9 +122,7 @@ function updatePayment(app: FastifyInstance) {
         },
       })
 
-      return reply
-        .status(200)
-        .send({ message: 'Pagamento atualizado com sucesso.', payment })
+      return reply.status(200).send({ message: 'Pagamento atualizado com sucesso' })
     } catch (err) {
       return reply.status(500).send({ error: 'Erro no servidor', err })
     }
@@ -164,9 +168,7 @@ function deletePayment(app: FastifyInstance) {
         },
       })
 
-      return reply
-        .status(200)
-        .send({ message: 'Pagamento deletado com sucesso.', payment })
+      return reply.status(200).send({ message: 'Pagamento deletado com sucesso' })
     } catch (err) {
       return reply.status(500).send({ error: 'Erro no servidor', err })
     }
@@ -193,6 +195,7 @@ function calculateUsedValue(value: number, { used_value }: Balance) {
 
 function calculateRemainingValue(value: number, { initial_value, used_value }: Balance) {
   const result = (used_value ? used_value : 0) + value
+  const newValue = initial_value - result
 
-  return initial_value - result
+  return newValue < 1 ? 0 : newValue
 }
